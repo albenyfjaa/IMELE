@@ -304,12 +304,19 @@ class ToTensor(object):
     
         # handle PIL Image
         if pic.mode == 'I':
-            img = torch.from_numpy(np.array(pic, np.int32, copy=False))
+            # img = torch.from_numpy(np.array(pic, np.int32, copy=False))
+            # MODIFICADO*: copy=False -> True
+            img = torch.from_numpy(np.array(pic, np.int32, copy=True))
         elif pic.mode == 'I;16':
-            img = torch.from_numpy(np.array(pic, np.int16, copy=False))
+            # img = torch.from_numpy(np.array(pic, np.int16, copy=False))
+            # MODIFICADO*: copy=False -> True
+            img = torch.from_numpy(np.array(pic, np.int16, copy=True))
         else:
-            img = torch.ByteTensor(
-                torch.ByteStorage.from_buffer(pic.tobytes()))
+            # MODIFICADO*: atualização pytorch            
+            # img = torch.ByteTensor(
+            #     torch.ByteStorage.from_buffer(pic.tobytes()))
+            img = torch.frombuffer(pic.tobytes(), dtype=torch.uint8)
+            
         # PIL image mode: 1, L, P, I, F, RGB, YCbCr, RGBA, CMYK
         if pic.mode == 'YCbCr':
             nchannel = 3
@@ -354,10 +361,17 @@ class Lighting(object):
 
 
 class Grayscale(object):
-
+    # SINTAXE ANTIGA
+    # def __call__(self, img):
+    #     gs = img.clone()
+    #     gs[0].mul_(0.299).add_(0.587, gs[1]).add_(0.114, gs[2])
+    #     gs[1].copy_(gs[0])
+    #     gs[2].copy_(gs[0])
+    #     return gs
     def __call__(self, img):
         gs = img.clone()
-        gs[0].mul_(0.299).add_(0.587, gs[1]).add_(0.114, gs[2])
+        # Sintaxe moderna: add_(tensor, alpha=valor)
+        gs[0].mul_(0.299).add_(gs[1], alpha=0.587).add_(gs[2], alpha=0.114)
         gs[1].copy_(gs[0])
         gs[2].copy_(gs[0])
         return gs

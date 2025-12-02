@@ -1,0 +1,57 @@
+# --- Python & Ambientes Virtuais ---
+env_imele/
+pretrained_model/
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+.conda/
+pip-log.txt
+
+# --- IDEs e Editores (VS Code, Pycharm, etc) ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Jupyter Notebooks (Checkpoints) ---
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+# --- Dados e Imagens (CRUCIAL para seu projeto) ---
+# Ignora arquivos pesados de imagem e geoprocessamento
+*.tif
+*.tiff
+*.tfw
+*.jpg
+*.jpeg
+*.png
+*.shp
+*.shx
+*.dbf
+*.prj
+
+# Ignora pastas específicas de dados, mas mantém a estrutura de pastas se tiver __init__.py
+data/raw/
+data/processed/
+data/ground_truth/
+
+# --- Deep Learning & Modelos ---
+# Ignora pesos treinados (podem ter centenas de MB)
+*.pth
+*.pt
+*.weights
+*.h5
+
+# --- Logs e Monitoramento (MLflow, Tensorboard) ---
+mlruns/
+runs/
+logs/
+*.log
+
+# --- Sistema Operacional (Windows/Mac) ---
+Thumbs.db
+Desktop.ini
+.DS_Store

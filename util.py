@@ -2,7 +2,7 @@
 import torch
 import math
 import numpy as np
-from ssim import pytorch_ssim
+# from ssim import pytorch_ssim
 from PIL import Image
 import cv2
 import torch
@@ -44,7 +44,9 @@ def setNanToZero(input, target):
 
 def evaluateError(output, target, idx, batches):
 
-    errors = {'MSE': 0, 'RMSE': 0, 'MAE': 0,'SSIM':0}
+    #MODIFICADO*: desativa SSIM
+    # errors = {'MSE': 0, 'RMSE': 0, 'MAE': 0,'SSIM':0}
+    errors = {'MSE': 0, 'RMSE': 0, 'MAE': 0}
                                                                                                                                                                                                                                                                                                                                                                     
     _output, _target, nanMask, nValidElement = setNanToZero(output, target)
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -96,7 +98,8 @@ def evaluateError(output, target, idx, batches):
 
         errors['MSE'] = torch.sum(torch.pow(diffMatrix, 2)) / IMsize / batches
         errors['MAE'] = torch.sum(diffMatrix) / IMsize / batches
-        ssim_loss = pytorch_ssim.SSIM(window_size = 15)
+        # MODIFICADO*: desativa SSIM
+        # ssim_loss = pytorch_ssim.SSIM(window_size = 15)
         errors['SSIM'] = ssim_loss(_output,_target)
        
        
@@ -105,7 +108,8 @@ def evaluateError(output, target, idx, batches):
        
 
         errors['MSE'] = float(errors['MSE'].data.cpu().numpy())
-        errors['SSIM'] = float(errors['SSIM'].data.cpu().numpy())
+        # MODIFICADO*: desativa SSIM
+        # errors['SSIM'] = float(errors['SSIM'].data.cpu().numpy())
         errors['MAE'] = float(errors['MAE'].data.cpu().numpy())
         #errors['SSIM'] = float(errors['SSIM'])
 
@@ -114,7 +118,8 @@ def evaluateError(output, target, idx, batches):
 
 def addErrors(errorSum, errors, batchSize):
     errorSum['MSE']=errorSum['MSE'] + errors['MSE'] * batchSize
-    errorSum['SSIM']=errorSum['SSIM'] + errors['SSIM'] * batchSize
+    # MODIFICADO*: desativa SSIM
+    # errorSum['SSIM']=errorSum['SSIM'] + errors['SSIM'] * batchSize
     errorSum['MAE']=errorSum['MAE'] + errors['MAE'] * batchSize
 
     return errorSum
@@ -124,7 +129,8 @@ def averageErrors(errorSum, N):
 
     averageError= {'MSE': 0, 'RMSE': 0, 'MAE': 0,'SSIM':0}
     averageError['MSE'] = errorSum['MSE'] / N
-    averageError['SSIM'] = errorSum['SSIM'] / N
+    # MODIFICADO*: desativa SSIM
+    # averageError['SSIM'] = errorSum['SSIM'] / N
     averageError['MAE'] = errorSum['MAE'] / N
 
 

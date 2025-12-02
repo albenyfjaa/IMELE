@@ -67,11 +67,11 @@ def main():
         model = model.cuda()
         state_dict = torch.load(args.model)['state_dict']
         model.load_state_dict(state_dict)
-        batch_size = 2
+        batch_size = 1
     else:
         model = model.cuda()
         #model = torch.nn.DataParallel(model, device_ids=[0, 1]).cuda()
-        batch_size = 2
+        batch_size = 1
 
 
 
@@ -119,15 +119,18 @@ def train(train_loader, model, optimizer, epoch):
 
         image, depth = sample_batched['image'], sample_batched['depth']
 
-        depth = depth.cuda(async=True)
+        # MODIFICADO: async -> non_blocking
+        # depth = depth.cuda(async=True)
+        depth = depth.cuda(non_blocking=True)
         image = image.cuda()
 
-
-        image = torch.autograd.Variable(image)
-        depth = torch.autograd.Variable(depth)
+        # MODIFICADO* Variable é desnecessário em PyTorch moderno
+        # image = torch.autograd.Variable(image)
+        # depth = torch.autograd.Variable(depth)
 
         ones = torch.ones(depth.size(0), 1, depth.size(2),depth.size(3)).float().cuda()
-        ones = torch.autograd.Variable(ones)
+        # MODIFICADO* Variable é desnecessário em PyTorch moderno
+        # ones = torch.autograd.Variable(ones)
         optimizer.zero_grad()
 
         output = model(image)
@@ -135,12 +138,16 @@ def train(train_loader, model, optimizer, epoch):
 
         if i%200 == 0:
             x = output[0]
-            x = x.view([220,220])
+            # Ajustado para bater com o input 62500 (sqrt(62500) = 250)
+            # x = x.view([220,220])
+            x = x.view([250,250])
             x = x.cpu().detach().numpy()
             x = x*100000
             x2 = depth[0]
             print(x)
-            x2 = x2.view([220,220])
+            # Ajustado para bater com o input 62500 (sqrt(62500) = 250)
+            # x2 = x2.view([220,220])
+            x2 = x2.view([250,250])
             x2 = x2.cpu().detach().numpy()
             x2 = x2  *100000
             print(x2)

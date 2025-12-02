@@ -53,10 +53,28 @@ def getTrainingData(batch_size=64,csv_data=''):
 
 
     csv = csv_data
+    
+    # MODIFICADO* PARA AJUSTAR TAMANHO:
+    # transformed_training_trans =  depthDataset(csv_file=csv,
+    #                                     transform=transforms.Compose([
+    #                                         #RandomHorizontalFlip(),
+    #                                         CenterCrop([440, 440], [220, 220]),
+    #                                         ToTensor(),
+    #                                         Lighting(0.1, __imagenet_pca[
+    #                                             'eigval'], __imagenet_pca['eigvec']),
+    #                                         ColorJitter(
+    #                                             brightness=0.4,
+    #                                             contrast=0.4,
+    #                                             saturation=0.4,
+    #                                         ),
+    #                                         Normalize(__imagenet_stats['mean'],
+    #                                                   __imagenet_stats['std'])
+    #                                     ]))
+
     transformed_training_trans =  depthDataset(csv_file=csv,
                                         transform=transforms.Compose([
                                             #RandomHorizontalFlip(),
-                                            CenterCrop([440, 440], [220, 220]),
+                                            CenterCrop([500, 500], [250, 250]),
                                             ToTensor(),
                                             Lighting(0.1, __imagenet_pca[
                                                 'eigval'], __imagenet_pca['eigvec']),
@@ -68,6 +86,7 @@ def getTrainingData(batch_size=64,csv_data=''):
                                             Normalize(__imagenet_stats['mean'],
                                                       __imagenet_stats['std'])
                                         ]))
+                                        
 
 
 
@@ -78,9 +97,13 @@ def getTrainingData(batch_size=64,csv_data=''):
     #x = ConcatDataset([transformed_training1,transformed_training2,transformed_training3,transformed_training4,transformed_training5,transformed_training_no_trans])
     #dataloader_training = DataLoader(x,batch_size,
                                       #shuffle=True, num_workers=4, pin_memory=False)
-    dataloader_training = DataLoader(transformed_training_trans, batch_size, num_workers=4, pin_memory=False)
-
-   
+    dataloader_training = DataLoader(
+        transformed_training_trans,
+        batch_size, 
+        num_workers=4, 
+        pin_memory=True # MODIFICADO* <--- Adicione isso para o non_blocking funcionar no train.py
+        )
+  
    
 
     return dataloader_training
@@ -103,6 +126,7 @@ def getTestingData(batch_size=3,csv=''):
     #                                    ]))
 
     csvfile = csv
+
 
     transformed_testing = depthDataset(csv_file=csvfile,
                                        transform=transforms.Compose([

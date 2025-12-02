@@ -12,7 +12,7 @@ from models import densenet
 
 import os, sys
 import torchvision.models as models
-import torch.autograd.variable as Variable
+# import torch.autograd.variable as Variable -> não mais necessário
 import scipy.io as sio
 
 
