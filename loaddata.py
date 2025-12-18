@@ -74,7 +74,7 @@ def getTrainingData(batch_size=64,csv_data=''):
     transformed_training_trans =  depthDataset(csv_file=csv,
                                         transform=transforms.Compose([
                                             #RandomHorizontalFlip(),
-                                            CenterCrop([500, 500], [250, 250]),
+                                            Resize([500, 500], [250, 250]),
                                             ToTensor(),
                                             Lighting(0.1, __imagenet_pca[
                                                 'eigval'], __imagenet_pca['eigvec']),
@@ -100,7 +100,7 @@ def getTrainingData(batch_size=64,csv_data=''):
     dataloader_training = DataLoader(
         transformed_training_trans,
         batch_size, 
-        num_workers=4, 
+        num_workers=16, # MODIFICADO*: de 4 para 16
         pin_memory=True # MODIFICADO* <--- Adicione isso para o non_blocking funcionar no train.py
         )
   
@@ -127,16 +127,24 @@ def getTestingData(batch_size=3,csv=''):
 
     csvfile = csv
 
+    # MODIFICADO* PARA AJUSTAR TAMANHO:
+    # transformed_testing = depthDataset(csv_file=csvfile,
+    #                                    transform=transforms.Compose([
+    #                                        CenterCrop([440, 440],[440,440]),
+    #                                        ToTensor(),
+    #                                        Normalize(__imagenet_stats['mean'],
+    #                                                  __imagenet_stats['std'])
+    #                                    ]))
 
     transformed_testing = depthDataset(csv_file=csvfile,
                                        transform=transforms.Compose([
-                                           CenterCrop([440, 440],[440,440]),
+                                           Resize([500, 500], [500, 500]),
                                            ToTensor(),
                                            Normalize(__imagenet_stats['mean'],
                                                      __imagenet_stats['std'])
                                        ]))
 
     dataloader_testing = DataLoader(transformed_testing, batch_size,
-                                    shuffle=False, num_workers=12, pin_memory=False)
+                                    shuffle=False, num_workers=16, pin_memory=False) # MODIFICADO*: num_workers=12 para num_workers=16
 
     return dataloader_testing

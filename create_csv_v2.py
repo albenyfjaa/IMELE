@@ -4,15 +4,15 @@ import pandas as pd
 
 # ================= CONFIGURAÇÃO =================
 # Ajuste os caminhos se necessário
-PASTA_RGB = r'D:\git\im2height\data\raw\test\images'     
-PASTA_DEPTH = r'D:\git\im2height\data\raw\test\dsm' 
+PASTA_RGB = r'C:\Users\LAB IA\Documents\albeny\datasets\dfc2019\extraidos_v2\dividido_v2\validacao\RGB'     
+PASTA_DEPTH = r'C:\Users\LAB IA\Documents\albeny\datasets\dfc2019\extraidos_v2\dividido_v2\validacao\Truth' 
 
 # Extensões
 EXT_RGB = '*.tif'   
 EXT_DEPTH = '*.tif' 
 
 # Nome do arquivo final
-NOME_CSV = 'meu_treino.csv'
+NOME_CSV = 'dfc2019_validacao.csv'
 # ================================================
 
 def formatar_caminho(caminho_absoluto):

@@ -17,7 +17,7 @@ from tensorboard_logger import configure, log_value
 
 
 parser = argparse.ArgumentParser(description='PyTorch DenseNet Training')
-parser.add_argument('--epochs', default=100
+parser.add_argument('--epochs', default=200
     , type=int,
                     help='number of total epochs to run')
 parser.add_argument('--start_epoch', default=0, type=int,
@@ -63,15 +63,16 @@ def main():
  
     
     if args.start_epoch != 0:
-        model = torch.nn.DataParallel(model, device_ids=[0, 1]).cuda()
+        # MODIFICADO*: nao utilizar processamento paralelo
+        # model = torch.nn.DataParallel(model, device_ids=[0, 1]).cuda()
         model = model.cuda()
         state_dict = torch.load(args.model)['state_dict']
         model.load_state_dict(state_dict)
-        batch_size = 1
+        batch_size = 5
     else:
         model = model.cuda()
         #model = torch.nn.DataParallel(model, device_ids=[0, 1]).cuda()
-        batch_size = 1
+        batch_size = 5
 
 
 
@@ -89,7 +90,8 @@ def main():
  
 
     for epoch in range(args.start_epoch, args.epochs):
-
+        
+        
         adjust_learning_rate(optimizer, epoch)
 
         train(train_loader, model, optimizer, epoch)
@@ -144,13 +146,13 @@ def train(train_loader, model, optimizer, epoch):
             x = x.cpu().detach().numpy()
             x = x*100000
             x2 = depth[0]
-            print(x)
+            # print(x)
             # Ajustado para bater com o input 62500 (sqrt(62500) = 250)
             # x2 = x2.view([220,220])
             x2 = x2.view([250,250])
             x2 = x2.cpu().detach().numpy()
             x2 = x2  *100000
-            print(x2)
+            # print(x2)
 
             x = x.astype('uint16')
             cv2.imwrite(args.data+str(i)+'_out.png',x)

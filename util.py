@@ -100,7 +100,7 @@ def evaluateError(output, target, idx, batches):
         errors['MAE'] = torch.sum(diffMatrix) / IMsize / batches
         # MODIFICADO*: desativa SSIM
         # ssim_loss = pytorch_ssim.SSIM(window_size = 15)
-        errors['SSIM'] = ssim_loss(_output,_target)
+        # errors['SSIM'] = ssim_loss(_output,_target)
        
        
 

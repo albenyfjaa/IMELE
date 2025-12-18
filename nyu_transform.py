@@ -13,6 +13,26 @@ import scipy.ndimage as ndimage
 
 import pdb
 
+class Resize(object):
+    """ 
+    Redimensiona a imagem e o depth usando APENAS NEAREST.
+    Isso preserva os valores originais dos pixels sem suavização.
+    """
+    def __init__(self, size_image, size_depth):
+        # size_image deve ser uma tupla/lista ex: [500, 500]
+        self.size_image = size_image
+        self.size_depth = size_depth
+
+    def __call__(self, sample):
+        image, depth = sample['image'], sample['depth']
+
+        # 1. Imagem RGB: Usando NEAREST como solicitado
+        image = image.resize(self.size_image, resample=Image.NEAREST)
+        
+        # 2. Imagem Depth: Continua NEAREST (obrigatório)
+        depth = depth.resize(self.size_depth, resample=Image.NEAREST)
+
+        return {'image': image, 'depth': depth}
 
 def _is_pil_image(img):
     if accimage is not None:
@@ -315,7 +335,8 @@ class ToTensor(object):
             # MODIFICADO*: atualização pytorch            
             # img = torch.ByteTensor(
             #     torch.ByteStorage.from_buffer(pic.tobytes()))
-            img = torch.frombuffer(pic.tobytes(), dtype=torch.uint8)
+            # img = torch.frombuffer(pic.tobytes(), dtype=torch.uint8)
+            img = torch.from_numpy(np.array(pic, np.uint8, copy=True))
             
         # PIL image mode: 1, L, P, I, F, RGB, YCbCr, RGBA, CMYK
         if pic.mode == 'YCbCr':

@@ -36,7 +36,9 @@ def main():
         x = str(x)
 
         model = define_model(is_resnet=False, is_densenet=False, is_senet=True)
-        model = torch.nn.DataParallel(model,device_ids=[0,1]).cuda()
+        # MODIFICADO*: UTILIZAR APENAS UMA GPU
+        # model = torch.nn.DataParallel(model,device_ids=[0,1]).cuda()
+        model = model.cuda()
         state_dict = torch.load(x)['state_dict']
         model.load_state_dict(state_dict)
 
@@ -55,11 +57,15 @@ def test(test_loader, model, args):
 
     for i, sample_batched in enumerate(test_loader):
         image, depth = sample_batched['image'], sample_batched['depth']
-        depth = depth.cuda(async=True)
+        # MODIFICADO*: async para non_blocking
+        # depth = depth.cuda(async=True)
+        depth = depth.cuda(non_blocking=True)
         image = image.cuda()
         output = model(image)
 
-        output = torch.nn.functional.interpolate(output,size=(440,440),mode='bilinear')
+        # MODIFICADO*: ajustar tamanho interpolação
+        # output = torch.nn.functional.interpolate(output,size=(440,440),mode='bilinear')
+        output = torch.nn.functional.interpolate(output,size=(500,500),mode='bilinear')
 
 
 
