@@ -272,6 +272,7 @@ tramp
 # ================================
 
 # General temporary files
+*.tar
 *.tmp
 *.temp
 *.bak

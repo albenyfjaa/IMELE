@@ -1,0 +1,15 @@
+=== IM2ELEVATION Training Started: 2025-12-20 16:27:10 ===
+Dataset: checkpoints_treino
+Epochs: 5
+Batch Size: 1
+Learning Rate: 0.0001
+Device IDs: [0]
+Training CSV: train_dataset.csv
+Output Directory: checkpoints_treino
+Log File: checkpoints_treino/training_log_checkpoints_treino_20251220_162710.txt
+============================================================
+Starting training for 5 epochs...
+============================================================
+Quick Validation - Epoch 0: RMSE=7.4548, L1=4.0920
+Running full test evaluation for epoch 0...
+Epoch 0, Train Loss: 2.3893, Full Test RMSE: inf (Best: inf at epoch 0)

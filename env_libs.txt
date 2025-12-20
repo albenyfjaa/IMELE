@@ -1,0 +1,7 @@
+pip install opencv-python numpy pandas scipy matplotlib
+
+
+ pip install scikit-image imageio scikit-learn rasterio tqdm
+ 
+ python train.py --data checkpoints_treino --csv train_dataset.csv --epochs 50 --batch-size 1 --gpu-ids 0 --lr 0.0001 --disable-normalization
+
