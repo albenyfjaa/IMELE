@@ -177,10 +177,7 @@ def test(test_loader, model, args, checkpoint_name="", predictions_dir=None, csv
         image = image.to(device)
         output = model(image)
 
-        # *MODIFICADO para adaptar ao tamanho do DFC2019
-        # output = torch.nn.functional.interpolate(output, size=(440,440), mode='bilinear')
-        output = torch.nn.functional.interpolate(output, size=(512,512), mode='bilinear')
-
+        output = torch.nn.functional.interpolate(output, size=(440,440), mode='bilinear')
 
         # Save predictions if requested
         if predictions_dir:

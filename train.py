@@ -213,7 +213,7 @@ def main():
         # Fast validation for quick feedback (new optimization)
         if use_test_evaluation and args.fast_validation:
             val_rmse, val_l1 = run_fast_validation(model, test_csv, dataset_name, epoch, device_ids[0], args)
-            log_and_print(f"Quick Validation - Epoch {epoch}: RMSE={val_rmse:.4f}, L1={val_l1:.4f}")
+            log_and_print(f"🚀 Quick Validation - Epoch {epoch}: RMSE={val_rmse:.4f}, L1={val_l1:.4f}")
         
         # Full test evaluation for accurate model selection
         run_full_test = False
@@ -229,12 +229,12 @@ def main():
                     epoch < 5 or
                     (epoch > 0 and val_rmse < best_rmse * 0.95)):  # 5% improvement threshold
                     run_full_test = True
-                    log_and_print(f"Running full test evaluation for epoch {epoch}...")
+                    log_and_print(f"⏱️  Running full test evaluation for epoch {epoch}...")
                     test_rmse = run_test_evaluation(model, test_csv, dataset_name, epoch, device_ids)
                 else:
                     # Use fast validation RMSE for non-full-test epochs
                     test_rmse = val_rmse
-                    log_and_print(f"Using fast validation RMSE for epoch {epoch}: {test_rmse:.4f}")
+                    log_and_print(f"📊 Using fast validation RMSE for epoch {epoch}: {test_rmse:.4f}")
             else:
                 # Original behavior: full test evaluation every epoch
                 run_full_test = True
@@ -256,7 +256,7 @@ def main():
                 best_model_path = save_model + f'best_epoch_{epoch}.pth.tar'
                 modelname = save_checkpoint({'state_dict': model.state_dict(), 'epoch': epoch, 'loss': avg_loss}, best_model_path)
                 test_type = "Full Test" if run_full_test else "Fast Val"
-                log_and_print(f"NEW BEST! Epoch {epoch}, {test_type} RMSE: {test_rmse:.4f} (Train Loss: {avg_loss:.4f})")
+                log_and_print(f"🏆 NEW BEST! Epoch {epoch}, {test_type} RMSE: {test_rmse:.4f} (Train Loss: {avg_loss:.4f})")
             else:
                 test_type = "Full Test" if run_full_test else "Fast Val"
                 log_and_print(f"Epoch {epoch}, Train Loss: {avg_loss:.4f}, {test_type} RMSE: {test_rmse:.4f} (Best: {best_rmse:.4f} at epoch {best_epoch})")
@@ -274,7 +274,7 @@ def main():
                 # Save new best checkpoint
                 best_model_path = save_model + f'best_epoch_{epoch}.pth.tar'
                 modelname = save_checkpoint({'state_dict': model.state_dict(), 'epoch': epoch, 'loss': avg_loss}, best_model_path)
-                log_and_print(f"NEW BEST! Epoch {epoch}, Loss: {avg_loss:.4f}")
+                log_and_print(f"🏆 NEW BEST! Epoch {epoch}, Loss: {avg_loss:.4f}")
             else:
                 log_and_print(f"Epoch {epoch}, Loss: {avg_loss:.4f} (Best: {best_loss:.4f} at epoch {best_epoch})")
             
@@ -284,15 +284,15 @@ def main():
 
     log_and_print("=" * 50)
     if use_test_evaluation:
-        log_and_print(f"Training completed! Best: Epoch {best_epoch}, Test RMSE: {best_rmse:.4f}")
+        log_and_print(f"✅ Training completed! Best: Epoch {best_epoch}, Test RMSE: {best_rmse:.4f}")
     else:
-        log_and_print(f"Training completed! Best: Epoch {best_epoch}, Train Loss: {best_loss:.4f}")
+        log_and_print(f"✅ Training completed! Best: Epoch {best_epoch}, Train Loss: {best_loss:.4f}")
     
     # Handle case where no epochs were run (e.g., when resuming with start_epoch >= epochs)
     if best_model_path is not None:
-        log_and_print(f"Checkpoints: {os.path.basename(best_model_path)}, latest.pth.tar")
+        log_and_print(f"📁 Checkpoints: {os.path.basename(best_model_path)}, latest.pth.tar")
     else:
-        log_and_print("No new checkpoints created (no epochs were run)")
+        log_and_print("📁 No new checkpoints created (no epochs were run)")
     log_and_print("=" * 50)
         
 
@@ -330,16 +330,12 @@ def train(train_loader, model, optimizer, epoch, writer):
         # Disable debug image saving during training for cleaner output
         if False:  # Changed from i%200 == 0 to False to disable completely
             x = output[0]
-            # MODIFICADO* para ajustar ao tamanho do dataset DFC2019
-            # x = x.view([220,220])
-            x = x.view([256,256])
+            x = x.view([220,220])
             x = x.cpu().detach().numpy()
             x = x*100000
             x2 = depth[0]
             print(x)
-            # MODIFICADO* para ajustar ao tamanho do dataset DFC2019
-            # x2 = x2.view([220,220])
-            x2 = x2.view([256,256])
+            x2 = x2.view([220,220])
             x2 = x2.cpu().detach().numpy()
             x2 = x2  *100000
             print(x2)
@@ -461,9 +457,8 @@ def run_fast_validation(model, test_csv, dataset_name, epoch, device, args):
             
             # Forward pass
             output = model(image)
-            # *MODIFICADO: alterado o tamanho 512x512 para ajustar ao dataset DFC2019
-            # output = torch.nn.functional.interpolate(output, size=(440, 440), mode='bilinear')
-            output = torch.nn.functional.interpolate(output, size=(512, 512), mode='bilinear')           
+            output = torch.nn.functional.interpolate(output, size=(440, 440), mode='bilinear')
+            
             # Compute losses (similar to training but without gradients)
             l1_loss = criterion(output, depth)
             

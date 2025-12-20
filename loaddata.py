@@ -82,13 +82,9 @@ def getTrainingData(batch_size=64, csv_data='', dataset_name=None, disable_norma
                                         disable_normalization=disable_normalization,
                                         use_uint16_conversion=use_uint16_conversion,
                                         transform=transforms.Compose([
-                                            # *MODIFICADO para 512 para adaptar ao dataset DFC2019
-                                            # PreprocessInput(max_size=440, dataset_name=dataset_name),  # New preprocessing step with dataset name
-                                            PreprocessInput(max_size=512, dataset_name=dataset_name),  # New preprocessing step with dataset name
+                                            PreprocessInput(max_size=440, dataset_name=dataset_name),  # New preprocessing step with dataset name
                                             #RandomHorizontalFlip(),
-                                            # *MODIFICADO para 512x512 para adaptar o dataset DFC2019
-                                            # CenterCrop([440, 440], [220, 220]),
-                                            CenterCrop([512, 512], [256, 256]),
+                                            CenterCrop([440, 440], [220, 220]),
                                             ToTensor(is_train=True, disable_normalization=disable_normalization),
                                             Lighting(0.1, __imagenet_pca[
                                                 'eigval'], __imagenet_pca['eigvec']),
@@ -140,11 +136,8 @@ def getTestingData(batch_size=3, csv='', dataset_name=None, disable_normalizatio
                                        disable_normalization=disable_normalization,
                                        use_uint16_conversion=use_uint16_conversion,
                                        transform=transforms.Compose([
-                                           # *MODIFICADO max_size para 512
-                                           # PreprocessInput(max_size=440, dataset_name=dataset_name),  # New preprocessing step with dataset name
-                                           PreprocessInput(max_size=512, dataset_name=dataset_name),  # New preprocessing step with dataset name
-                                           # CenterCrop([440, 440], [220, 220]),
-                                           CenterCrop([512, 512], [512, 512]),
+                                           PreprocessInput(max_size=440, dataset_name=dataset_name),  # New preprocessing step with dataset name
+                                           CenterCrop([440, 440],[440,440]),
                                            ToTensor(is_train=False, disable_normalization=disable_normalization),
                                            Normalize(__imagenet_stats['mean'],
                                                      __imagenet_stats['std'])

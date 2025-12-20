@@ -21,17 +21,17 @@ def clear_gpu_cache():
     """Clear PyTorch GPU cache."""
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
-        print("GPU cache cleared successfully")
+        print("✅ GPU cache cleared successfully")
         return True
     else:
-        print("No CUDA available")
+        print("❌ No CUDA available")
         return False
 
 
 def get_gpu_memory_info():
     """Get detailed GPU memory information."""
     if not torch.cuda.is_available():
-        print("No CUDA available")
+        print("❌ No CUDA available")
         return
     
     print("=" * 60)
@@ -87,7 +87,7 @@ def optimize_memory_settings():
     os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'expandable_segments:True'
     os.environ['CUDA_LAUNCH_BLOCKING'] = '0'
     
-    print("Memory optimization settings applied:")
+    print("✅ Memory optimization settings applied:")
     print("  - PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True")
     print("  - CUDA_LAUNCH_BLOCKING=0")
 
@@ -109,16 +109,16 @@ def kill_gpu_processes(gpu_id=None):
             for pid in pids:
                 try:
                     subprocess.run(['kill', '-9', pid], check=True)
-                    print(f"Terminated process {pid}")
+                    print(f"✅ Terminated process {pid}")
                 except subprocess.CalledProcessError:
-                    print(f"Failed to terminate process {pid}")
+                    print(f"❌ Failed to terminate process {pid}")
         else:
             print("No GPU processes found")
             
     except FileNotFoundError:
-        print("nvidia-smi not found. Cannot kill GPU processes.")
+        print("❌ nvidia-smi not found. Cannot kill GPU processes.")
     except Exception as e:
-        print(f"Error killing GPU processes: {e}")
+        print(f"❌ Error killing GPU processes: {e}")
 
 
 def suggest_batch_size(gpu_memory_gb):
